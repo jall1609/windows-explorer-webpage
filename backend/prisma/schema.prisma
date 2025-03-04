@@ -1,0 +1,48 @@
+// Prisma schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  name       String
+  username   String     @unique
+  email      String     @unique
+  password   String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  folders Folders[]
+  files Files[]
+}
+
+model Folders {
+  id         Int        @id @default(autoincrement())
+  name        String
+  parent_folder_id   Int? 
+  user_id   Int? 
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime?
+  childrens Folders[] @relation("Subfolder")
+  parent    Folders?   @relation("Subfolder", fields: [parent_folder_id], references: [id])
+  user      User?   @relation(fields: [user_id], references: [id])
+  files Files[]
+}
+
+model Files {
+  id         Int        @id @default(autoincrement())
+  name        String
+  content     String    @db.Text()
+  folder_id   Int?
+  user_id   Int? 
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime?
+  folder    Folders? @relation(fields: [folder_id], references: [id])
+  user      User?   @relation(fields: [user_id], references: [id])
+}

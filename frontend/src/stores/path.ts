@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { Folder } from '@/dto'
+import type { Item } from '@/Utils/dto'
 
 export const usePathStore = defineStore('path_store', () => {
   const default_path = [
@@ -10,11 +10,11 @@ export const usePathStore = defineStore('path_store', () => {
       type : 'folder'
     }
   ];
-  const path = ref<Folder[]>(default_path)
-  function addPath(newPath : Folder) {
+  const path = ref<Item[]>(default_path)
+  function addPath(newPath : Item) {
     path.value.push(newPath)
   }
-  function changePath(newPath : Folder) {
+  function changePath(newPath : Item) {
     path.value = [...default_path, newPath]
   }
   const last_path = computed(() => path.value[path.value.length - 1]) 
