@@ -1,7 +1,15 @@
 export interface Item {
     id : number;
     name : string;
-    type : string;
+    parent_folder_id? :  number | null;
+    content? : string;
+}
+
+export interface Folder {
+    id : number;
+    name : string;
+    parent_folder_id? : number | null;
+    childrens? : Folder[];
 }
 
 export interface User {

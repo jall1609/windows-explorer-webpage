@@ -21,7 +21,7 @@ export class FoldersService {
   }
 
   async findAll( {where, include} : WhereAndInclude ) {
-    return await this.prisma.folders.findMany({where, include : include ?? this.relation});
+    return await this.prisma.folders.findMany({where, include : include ?? this.relation, distinct: ['id']});
   }
 
   async findOne( {where, include} : WhereAndInclude) {

@@ -4,7 +4,7 @@ import { FoldersService } from './folder.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
-import { isNotDeleted } from 'src/utlis/function';
+import { isNotDeleted, organizeFolders } from 'src/utlis/function';
 
 @Controller('folders')
 @UseGuards(JwtAuthGuard)
@@ -16,6 +16,19 @@ export class FoldersController {
   async create(@Request() req, @Body() CreateFolderDTO: CreateFolderDTO) {
     if(!CreateFolderDTO.user_id) CreateFolderDTO.user_id = req.user.id;
     return await this.foldersService.create(CreateFolderDTO);
+  }
+
+  @Get('full-folder')
+  async getFull(@Request() req) {
+    const get_data =  await this.foldersService.findAll({
+      where : {
+        OR :[
+          {user_id : +req.user.id},
+          {user_id : null},
+        ], ...isNotDeleted
+      }, include : {} });
+
+      return organizeFolders(get_data);
   }
 
   @Get()

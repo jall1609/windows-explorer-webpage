@@ -56,7 +56,7 @@ export default {
           ? delete_active
           : delete_inactive;
       } else if (menu.name === 'Edit File') {
-        return selected_item_store.selected_item && Object.keys(selected_item_store.selected_item).length > 0 &&  selected_item_store.selected_item.type !== 'folder'
+        return selected_item_store.selected_item && Object.keys(selected_item_store.selected_item).length > 0 &&  "content" in selected_item_store.selected_item 
           ? image_open_active
           : image_open_inactive;
       } else if (menu.name == "Log out") {

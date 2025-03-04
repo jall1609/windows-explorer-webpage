@@ -15,7 +15,7 @@ export default {
 
 <template>
   <div class=" flex flex-row my-2 mx-3">
-    <div class="border-gray-200 border-1 w-3/4 flex rounded-md px-3 ">
+    <div class="border-gray-200 border-1 w-3/4 flex rounded-md px-3  text-gray-500">
         <div class="my-auto">{{ path_store.path.map(e => e.name).join(" > ") }}</div>
     </div>
     <div class=" w-1/4  mx-2 px-3">
