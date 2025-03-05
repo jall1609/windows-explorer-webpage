@@ -3,6 +3,7 @@ export interface Item {
     name : string;
     parent_folder_id? :  number | null;
     content? : string;
+    type? : string
 }
 
 export interface Folder {

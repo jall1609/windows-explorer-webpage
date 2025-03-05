@@ -45,14 +45,17 @@ export const useFolderStore = defineStore('folder_store', () => {
   const getFullFolder = computed(() => full_folder.value)
 
   async function fatchFullFolder() {
+    let data = null;
     await api
       .get('/folders/full-folder', {headers: {"Authorization" : "Bearer "+ authStore.auth_user.access_token }} ) 
       .then((response) => {
+        data = response.data.data[0]
         setFullFolder(response.data.data[0])
       })
       .catch((err) => {
         console.log(err.message)
       })
+    return data;
   }
 
   async function fetchItemByFolderId(id_folder : number) {

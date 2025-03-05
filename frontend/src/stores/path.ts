@@ -19,8 +19,10 @@ export const usePathStore = defineStore('path_store', () => {
     }
   ];
   const path = ref<Item[]>(default_path)
-  function addPath(newPath : Item) {
+  async function addPath(newPath : Item) {
     path.value.push(newPath)
+    selected_item_store.selectItem(selected_item_store.selected_item?.id != newPath.id ? newPath :  null )
+    await folder_store.fetchItemByFolderId(newPath.id)
   }
   async function changePath(newPath : Item[], from_left_or_right_panel : string = 'left') {
     path.value = newPath

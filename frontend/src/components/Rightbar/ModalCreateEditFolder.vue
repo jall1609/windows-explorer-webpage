@@ -58,6 +58,7 @@ export default {
             modal_store.toggleModal('modal_create_edit_folder');
             if(modal_store.data_modal.edit_or_create == 'edit') {
               path_store.changeNameById(current_item.id, folder_name.value)
+              selected_item_store.selectItem(null)
             } 
           }); 
         })

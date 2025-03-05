@@ -4,7 +4,8 @@ import type { Auth, Modals } from '@/Utils/dto'
 
 export const useModalStore = defineStore('modal_store', () => {
   const modals = ref<Modals>({
-    modal_create_edit_folder : false
+    modal_create_edit_folder : false,
+    modal_create_edit_file : false
   })
   const data_modal = ref<object | null>(null);
 

@@ -19,14 +19,16 @@ import Swal from 'sweetalert2'
 import { useFolderStore } from '@/stores/folder'
 import { useModalStore } from '@/stores/modal'
 import ModalCreateEditFolder from '@/components/Rightbar/ModalCreateEditFolder.vue'
+import ModalCreateEditFile from '@/components/Rightbar/ModalCreateEditFile.vue'
 import api from '@/Utils/api'
+import { findFolderPathById } from '@/Utils/function'
 
 export default {
   data: () => ({
     
   }),
   components : {
-    ModalCreateEditFolder
+    ModalCreateEditFolder, ModalCreateEditFile
   },
   setup() {
      const selected_item_store = useSelectedItemStore();
@@ -45,14 +47,12 @@ export default {
 
     const getPropForMenu = (menu) => {
       function isActive(menu_name) {
-        if(menu_name == 'Edit File') {
-          return selected_item_store.selected_item && Object.keys(selected_item_store.selected_item).length > 0 &&  "content" in selected_item_store.selected_item;
-        } else if ( menu_name == 'New Folder' || menu_name == 'New File') {
+        if ( menu_name == 'New Folder' || menu_name == 'New File') {
           return path_store.last_path.name != 'This PC'
         } else if(menu_name == 'Log out') {
           return true;
-        } else if( menu.name == 'Delete'|| menu.name == 'Rename') {
-          return selected_item_store.selected_item?.id > 5
+        } else if( menu.name == 'Delete'|| menu.name == 'Edit') {
+          return selected_item_store.selected_item?.type == 'file' || (selected_item_store.selected_item?.type == 'folder' &&  selected_item_store.selected_item?.id > 5)
         }
         // else if (menu_name == 'Open') {
         //   console.log(folder_store.menu_sidebar.map(e => e.name).includes(selected_item_store.selected_item?.name),selected_item_store.selected_item?.name )
@@ -71,12 +71,10 @@ export default {
         return_prop.image = isActive(menu.name) ? new_folder_active : new_folder_inactive;
       } else if (menu.name === 'New File') {
         return_prop.image = isActive(menu.name) ? new_file_active : new_file_inactive;
-      } else if (menu.name === 'Rename') {
+      } else if (menu.name === 'Edit') {
         return_prop.image = isActive(menu.name) ? rename_active : rename_inactive;
       } else if (menu.name === 'Delete') {
         return_prop.image = isActive(menu.name) ? delete_active : delete_inactive;
-      } else if (menu.name === 'Edit File') {
-        return_prop.image = isActive(menu.name) ? image_open_active : image_open_inactive;
       } else if (menu.name == "Log out") {
         return_prop.image = logout_active
       }
@@ -100,16 +98,12 @@ export default {
           prop: getPropForMenu({ name: 'New File' }),
         },
         {
-          name: 'Rename',
-          prop: getPropForMenu({ name: 'Rename' }),
+          name: 'Edit',
+          prop: getPropForMenu({ name: 'Edit' }),
         },
         {
           name: 'Delete',
           prop: getPropForMenu({ name: 'Delete' }),
-        },
-        {
-          name: 'Edit File',
-          prop: getPropForMenu({ name: 'Edit File' }),
         },
         ];
       } else if (active_menu_list.value == authStore.auth_user.user.name ) {
@@ -134,7 +128,6 @@ export default {
   methods : {
     async handleHapus() {
       const current_item = this.selected_item_store.selected_item;
-      const type_item = "content" in current_item ? 'files' : 'folders';
       Swal.fire({
           title: "Are you sure?",
           text: `Apa kamu yakin akan menghapus ${current_item.name}?`,
@@ -145,15 +138,15 @@ export default {
           confirmButtonText: "Yes, delete it!"
       }).then( async (result) => {
           if (result.isConfirmed) {
-              await api.delete(`/${type_item}/${current_item.id}`, {headers: {"Authorization" : "Bearer "+ this.authStore.auth_user.access_token}})
+              await api.delete(`/${current_item.type}s/${current_item.id}`, {headers: {"Authorization" : "Bearer "+ this.authStore.auth_user.access_token}})
               .then(() => {
                   Swal.fire({
                       title: 'Success!',
                       text: `Berhasil Delete!`,
                       icon: 'success',
-                  }).then(() => {
-                    this.folder_store.fatchFullFolder()
-                    this.folder_store.fetchItemByFolderId(current_item.parent_folder_id ?? current_item.folder_id)
+                  }).then( async () => {
+                    const new_full_folder = await this.folder_store.fatchFullFolder()
+                    this.path_store.changePath(findFolderPathById(new_full_folder, current_item.parent_folder_id ?? current_item.folder_id))
                   });
               }).catch((e) => {
                   let response = e.response;
@@ -163,12 +156,14 @@ export default {
       });
     },
     handleClickMenuOperasional(menu){
+      const current_item = this.selected_item_store?.selected_item;
+      if(this.menu_operational.find(e => e.name == menu.name).prop.is_active == false) return;
       if(menu.name == 'Open') {
-        if(this.selected_item_store.selected_item?.type == 'folder') {
-          if(this.selected_item_store.selected_item.id <= 5 ) {
-            this.path_store.changePath(this.selected_item_store.selected_item)
+        if(current_item?.type == 'folder') {
+          if(current_item.id <= 5 ) {
+            this.path_store.changePath(current_item)
           } else {
-            this.path_store.addPath(this.selected_item_store.selected_item)
+            this.path_store.addPath(current_item)
           }
         }
       } 
@@ -182,21 +177,30 @@ export default {
           window.location = ('/login')
         }); 
       } 
-      else if (menu.name == 'New Folder' || menu.name == 'Rename') {
-        if(this.menu_operational.find(e => e.name == menu.name).prop.is_active == false) return;
+      else if (menu.name == 'New Folder' || menu.name == 'Edit') {
         let data_modal = null;
         if(menu.name == 'New Folder') {
           data_modal = {
             edit_or_create  : 'create',
           }
-        } else if (menu.name == 'Rename') {
+        } else if (menu.name == 'Edit') {
           data_modal = {
             edit_or_create  : 'edit',
           }
         } ;
         this.modal_store.setDataModal(data_modal )
-        if(this.menu_operational.find(e => e.name == 'New Folder').prop.is_active) this.modal_store.toggleModal('modal_create_edit_folder')
+        this.modal_store.toggleModal(`modal_create_edit_${current_item?.type}`)
       } 
+      else if (menu.name == 'New File') {
+        let data_modal = null;
+        if(menu.name == 'New File') {
+          data_modal = {
+            edit_or_create  : 'create',
+          }
+        } ;
+        this.modal_store.setDataModal(data_modal )
+        this.modal_store.toggleModal(`modal_create_edit_file`)
+      }
       else if (menu.name == 'Delete') {
         this.handleHapus()
       }
@@ -225,8 +229,9 @@ export default {
       <div style="min-height: 32px; text-align: center">
         <img :src="menu.prop.image" style="width: 30px; margin: auto" />
       </div>
-      <div>{{ menu.name }}</div>
+      <div>{{ menu?.name }}</div>
     </a>
   </div>
   <ModalCreateEditFolder v-if="modal_store.modals.modal_create_edit_folder" />
+  <ModalCreateEditFile v-if="modal_store.modals.modal_create_edit_file" />
 </template>
