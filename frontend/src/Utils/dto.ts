@@ -24,3 +24,5 @@ export interface Auth {
     access_token : string;
     user : User;
 }
+
+export type Modals = Record<string, boolean>

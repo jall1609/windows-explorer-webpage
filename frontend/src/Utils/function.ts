@@ -34,4 +34,3 @@ export function findFolderPathById(data: Folder, id_folder: number): Folder[] {
 export function strLimit(text  : string, maxKarakter : number, symbol : string = ' ...') {
   return text.length > maxKarakter ? text.slice(0, maxKarakter) + symbol : text;
 }
-  

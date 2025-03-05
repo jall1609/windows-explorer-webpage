@@ -26,7 +26,7 @@ async function main() {
             name : "My Document",
           },
           {
-            name : "Download",
+            name : "Downloads",
           },
           {
             name : "Local Disk (C:)",
