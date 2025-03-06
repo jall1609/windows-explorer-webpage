@@ -37,7 +37,10 @@ export const useFolderStore = defineStore('folder_store', () => {
   const authStore = useAuthStore();
   const item_in_right_panel = ref<Item[]>([])
 
-  const full_folder = ref<Folder>({})
+  const full_folder = ref<Folder>({
+    id : 1,
+    name: 'This PC',
+  })
   function setFullFolder(new_full_folder : Folder ) {
     full_folder.value = new_full_folder
   }
@@ -50,6 +53,7 @@ export const useFolderStore = defineStore('folder_store', () => {
       .get('/folders/full-folder', {headers: {"Authorization" : "Bearer "+ authStore.auth_user.access_token }} ) 
       .then((response) => {
         data = response.data.data[0]
+        // console.log(findFoldersByParentId([data], 7, "buku"))
         setFullFolder(response.data.data[0])
       })
       .catch((err) => {

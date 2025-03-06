@@ -1,8 +1,9 @@
-<script setup lang="ts">
+<script setup >
 import HeaderMenu from '@/components/HeaderMenu.vue'
 import Leftbar from '@/components/Leftbar.vue'
 import Navbar from '@/components/Navbar.vue';
 import Rightbar from '@/components/Rightbar.vue'
+
 </script>
 
 <template>

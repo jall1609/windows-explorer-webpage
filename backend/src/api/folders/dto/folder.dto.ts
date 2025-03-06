@@ -45,6 +45,18 @@ export class FilterGetFolderDTO {
     user_id? : number;
 }
 
+export class Folder {
+    id: number;
+    parent_folder_id: number | null;
+    name: string;
+    user_id: number | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    childrens : Folder[];
+    path? : {id : number, name : string}[]
+}
+
 export class WhereAndInclude {
     where? : Prisma.FoldersWhereInput;
     include? : Prisma.FoldersInclude

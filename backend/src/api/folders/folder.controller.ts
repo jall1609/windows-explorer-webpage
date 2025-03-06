@@ -4,7 +4,7 @@ import { FoldersService } from './folder.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
-import { isNotDeleted, organizeFolders } from 'src/utlis/function';
+import { findFolderPathById, findFoldersByParentId, isNotDeleted, organizeFolders } from 'src/utlis/function';
 
 @Controller('folders')
 @UseGuards(JwtAuthGuard)
@@ -44,6 +44,23 @@ export class FoldersController {
       } });
   }
 
+  @Get('search-with-children')
+  async searchWithChildren(@Request() req, @Query() query?: FilterGetFolderDTO) {
+    const get_full_folder = (await this.getFull(req))
+    // const ww = get_full_folder.map(folder => {
+    //   folder.path = findFolderPathById(get_full_folder[0], folder.id).map(e => {
+    //     return {
+    //       id : e.id,
+    //       name : e.name
+    //     }
+    //   })
+    //   return folder
+    // });
+    // return get_full_folder[0]
+    // return ww[0]
+    return findFoldersByParentId( get_full_folder, 8, query.name);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req) {
     await this.foldersService.validasiPemilik(req.user, {id : +id});
@@ -65,19 +82,19 @@ export class FoldersController {
     return await this.foldersService.remove({id : +id, ...isNotDeleted});
   }
 
-  filterWhereStatus(query : FilterGetFolderDTO) {
+  filterWhereStatus(query : FilterGetFolderDTO, exclude : string[] = []) {
     let where : Prisma.FoldersWhereInput = {};
-    if(query.user_id) {
+    if(query.user_id && exclude.includes('user_id') == false) {
       where  = {
         ...where, user_id : +query.user_id,
       }
     }
-    if(query.parent_folder_id) {
+    if(query.parent_folder_id && exclude.includes('parent_folder_id') == false) {
       where  = {
         ...where, parent_folder_id : +query.parent_folder_id,
       }
     }
-    if(query.name) {
+    if(query.name && exclude.includes('name') == false) {
       where  = {
         ...where, name : {
           contains : query.name,
