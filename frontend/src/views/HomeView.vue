@@ -7,7 +7,7 @@ import Rightbar from '@/components/Rightbar.vue'
 </script>
 
 <template>
-  <main>
+  <main class="bg-white dark:bg-white text-dark dark:text-dark">
     <HeaderMenu />
     <Navbar />
     <div class="flex flex-row">

@@ -31,12 +31,19 @@ export class FilesController {
       } });
   }
 
+  @Get('search-with-children')
+  async searchWithChildren(@Request() req, @Query() query?: FilterGetItemDTO) {
+    if(!query.user_id) query.user_id = req.user.id;
+    const where = this.filterWhereStatus(query)
+    return this.filesService.searchWithChildren({where})
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req) {
     await this.filesService.validasiPemilik(req.user, {id : +id});
     return await this.filesService.findOne({
       where : {
-        id : +id, ...isNotDeleted
+        id : +id, user_id : req.user.id,   ...isNotDeleted
       }});
   }
 

@@ -20,7 +20,7 @@ export default {
   methods : {
     handleSelect(menu : Item) {
       const selected_item_store = useSelectedItemStore()
-      selected_item_store.selectItem(selected_item_store.selected_item?.id != menu.id ? menu :  null )
+      selected_item_store.selectItem(selected_item_store.selected_item?.id != menu.id ? menu :  null , 'right')
       // path_store.changePath(findFolderPathById(folder_store.getFullFolder, menu.id))
     }
   }

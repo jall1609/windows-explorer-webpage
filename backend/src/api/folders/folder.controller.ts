@@ -41,7 +41,19 @@ export class FoldersController {
     return await this.foldersService.findAll({
       where : {
         ...where, ...isNotDeleted
-      } });
+      }, 
+      include : {
+        childrens : {
+          where : {
+            ...isNotDeleted, user_id : req.user.id
+          }
+        }, files: {
+          where : {
+            ...isNotDeleted, user_id : req.user.id
+          }
+        }
+      }
+    });
   }
 
   @Get('search-with-children')
@@ -58,7 +70,7 @@ export class FoldersController {
     // });
     // return get_full_folder[0]
     // return ww[0]
-    return findFoldersByParentId( get_full_folder, 8, query.name);
+    return findFoldersByParentId( get_full_folder, +query.parent_folder_id, query.name);
   }
 
   @Get(':id')
@@ -67,7 +79,19 @@ export class FoldersController {
     return await this.foldersService.findOne({
       where : {
         id : +id, ...isNotDeleted
-      }});
+      },
+      include : {
+        childrens : {
+          where : {
+            ...isNotDeleted, user_id : req.user.id
+          }
+        }, files: {
+          where : {
+            ...isNotDeleted, user_id : req.user.id
+          }
+        }
+      }
+    });
   }
 
   @Patch(':id')

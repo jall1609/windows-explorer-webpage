@@ -33,10 +33,10 @@ export default {
     </div>
     <div class=" w-1/4  mx-2 px-3">
         <div className="flex">
-            <a href="#" @click.prevent="handleSubmit" className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-200 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+            <a href="#" @click.prevent="handleSubmit" className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-200 rounded-s-md ">
                 <img :src="search_img" alt="" srcset="" width="20px">
             </a>
-            <input type="text"  onChange={handleChange} name="phone_number"  className="rounded-none rounded-e-lg  border border-gray-200 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " :placeholder="'Search in ' + path_store.last_path.name + ' and childrens'" v-model="searching" />
+            <input type="text"  onChange={handleChange} name="phone_number"  className="rounded-none rounded-e-lg  border border-gray-200 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full  p-2.5   " :placeholder="'Search in ' + path_store.last_path.name + ' and childrens'" v-model="searching" />
         </div>
     </div>
   </div>  

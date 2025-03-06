@@ -48,6 +48,22 @@ function findChildrenFolderById(id: number, keyword: string, folder: Folder): Fo
   return result;
 }
 
+function getAllChildrenByParentId(root : Folder[], parent_folder_id : number) {
+  const children = [];
+
+    root.forEach(item => {
+        if (item.parent_folder_id === parent_folder_id) {
+            children.push(item);
+
+            const nestedChildren = getAllChildrenByParentId(root, item.id);
+            children.push(...nestedChildren);
+        }
+    });
+
+    return children;
+
+}
+
 function findFoldersByParentId(root: Folder[], folderId: number, keyword: string): Folder[] {
   let targetFolder: Folder | null = null;
 
@@ -96,4 +112,4 @@ function findFolderPathById(data: Folder, id_folder: number): Folder[] {
   return path;
 }
 
-export {isNotDeleted, organizeFolders, findFoldersByParentId, findFolderPathById}
+export {isNotDeleted, organizeFolders, findFoldersByParentId, findFolderPathById, findChildrenFolderById, getAllChildrenByParentId}

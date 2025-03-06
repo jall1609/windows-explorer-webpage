@@ -27,7 +27,7 @@ export const usePathStore = defineStore('path_store', () => {
   async function changePath(newPath : Item[], from_left_or_right_panel : string = 'left') {
     path.value = newPath
     const last_path = newPath[ newPath.length - 1 ];
-    selected_item_store.selectItem(selected_item_store.selected_item?.id != last_path.id ? last_path :  (from_left_or_right_panel == 'right' ? null : last_path) )
+    selected_item_store.selectItem(selected_item_store.selected_item?.id != last_path.id ? last_path :  (from_left_or_right_panel == 'right' ? null : last_path), from_left_or_right_panel )
     await folder_store.fetchItemByFolderId(last_path.id)
   }
   

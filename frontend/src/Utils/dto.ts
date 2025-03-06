@@ -4,6 +4,7 @@ export interface Item {
     parent_folder_id? :  number | null;
     content? : string;
     type? : string
+    from_left_or_right_panel? : string
 }
 
 export interface Folder {

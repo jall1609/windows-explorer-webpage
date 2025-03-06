@@ -50,10 +50,10 @@ export class Folder {
     parent_folder_id: number | null;
     name: string;
     user_id: number | null;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    childrens : Folder[];
+    createdAt: string | Date;
+    updatedAt: string | Date;
+    deletedAt: string | Date | null;
+    childrens? : Folder[];
     path? : {id : number, name : string}[]
 }
 

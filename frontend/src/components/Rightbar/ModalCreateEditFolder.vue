@@ -80,9 +80,9 @@ export default {
         <div className="my-3">
           <form  action="#" @submit.prevent="handleSubmit">
               <div className="my-3">
-                <label htmlFor="folder_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Folder Name</label>
-                  <input type="text" name="folder_name" id="folder_name" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tugas Kuliah" v-model="folder_name" @keydown.enter="createFunction" />
-                  <div v-for="(err, index) in error.name" class="mt-2 text-sm text-red-600 dark:text-red-500">
+                <label htmlFor="folder_name" className="block mb-2 text-sm font-medium text-gray-900 ">Folder Name</label>
+                  <input type="text" name="folder_name" id="folder_name" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5     " placeholder="Tugas Kuliah" v-model="folder_name" @keydown.enter="createFunction" />
+                  <div v-for="(err, index) in error.name" class="mt-2 text-sm text-red-600 ">
                     <span className="font-medium">{{ err }}</span>
                   </div>
               </div>

@@ -48,11 +48,13 @@ export default {
     const getPropForMenu = (menu) => {
       function isActive(menu_name) {
         if ( menu_name == 'New Folder' || menu_name == 'New File') {
-          return path_store.last_path.name != 'This PC'
+          return path_store.last_path?.name != 'This PC'
         } else if(menu_name == 'Log out') {
           return true;
         } else if( menu.name == 'Delete'|| menu.name == 'Edit') {
           return selected_item_store.selected_item?.type == 'file' || (selected_item_store.selected_item?.type == 'folder' &&  selected_item_store.selected_item?.id > 5)
+        } else if (menu.name == 'Open') {
+          return selected_item_store.selected_item && Object.keys(selected_item_store.selected_item).length > 0 &&  selected_item_store.selected_item?.from_left_or_right_panel == 'right'
         }
         // else if (menu_name == 'Open') {
         //   console.log(folder_store.menu_sidebar.map(e => e.name).includes(selected_item_store.selected_item?.name),selected_item_store.selected_item?.name )
@@ -156,7 +158,7 @@ export default {
       });
     },
     handleClickMenuOperasional(menu){
-      const current_item = this.selected_item_store?.selected_item;
+      let current_item = this.selected_item_store?.selected_item;
       if(this.menu_operational.find(e => e.name == menu.name).prop.is_active == false) return;
       if(menu.name == 'Open') {
         if(current_item?.type == 'folder') {
@@ -187,9 +189,9 @@ export default {
           data_modal = {
             edit_or_create  : 'edit',
           }
-        } ;
+        };        
         this.modal_store.setDataModal(data_modal )
-        this.modal_store.toggleModal(`modal_create_edit_${current_item?.type}`)
+        this.modal_store.toggleModal( menu.name == 'New Folder' ? `modal_create_edit_folder` : `modal_create_edit_${this.selected_item_store?.selected_item?.type}` )
       } 
       else if (menu.name == 'New File') {
         let data_modal = null;

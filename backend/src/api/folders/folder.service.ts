@@ -21,25 +21,25 @@ export class FoldersService {
   }
 
   async findAll( {where, include} : WhereAndInclude ) {
-    return await this.prisma.folders.findMany({where, include : include ?? this.relation, distinct: ['id']});
+    return await this.prisma.folders.findMany({where : {...where, ...isNotDeleted}, include : include ?? this.relation, distinct: ['id']});
   }
 
   async findOne( {where, include} : WhereAndInclude) {
-    return await this.prisma.folders.findFirst({where, include : include ?? this.relation});
+    return await this.prisma.folders.findFirst({where : {...where, ...isNotDeleted}, include : include ?? this.relation});
   }
 
   async update(where : Prisma.FoldersWhereUniqueInput, data: UpdateFolderDto) {
-    return await this.prisma.folders.update({where, data});
+    return await this.prisma.folders.update({where : {...where, ...isNotDeleted}, data});
   }
 
   async remove(where : Prisma.FoldersWhereUniqueInput) {
     return await this.prisma.folders.update({
-      where, data: {deletedAt : new Date()}
+      where : {...where, ...isNotDeleted}, data: {deletedAt : new Date()}
     });
   }
 
   async validasiPemilik(user : User, where : Prisma.FoldersWhereInput)   {
-    const existing = await this.findOne({ where  });
+    const existing = await this.findOne({ where : {...where, ...isNotDeleted}  });
     if ( !existing || (existing?.user_id != null &&  existing?.user_id != user.id) ) throw new UnauthorizedException('You are not authorized to access this resource')
     return true
   }
